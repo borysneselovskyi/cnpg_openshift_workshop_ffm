@@ -1,0 +1,32 @@
+apiVersion: postgresql.k8s.enterprisedb.io/v1
+kind: Cluster
+metadata:
+  name: "$cluster_restore"
+spec:
+  instances: 1
+  imageName: "$postgres_upgrade_image"
+  imagePullSecrets:
+  - name: postgresql-operator-pull-secret
+
+  storage:
+    size: $postgres_storage
+
+  walStorage:
+    resizeInUseVolumes: true
+    size: $postgres_wal_storage
+
+  monitoring:
+    enablePodMonitor: true
+
+$affinity
+
+  bootstrap:
+    recovery:
+      backup:
+        name: ${cluster_name}-backup-test
+
+  resources:
+    limits:
+      memory: "$postgres_memory"
+      cpu: "$postgres_cpu"
+

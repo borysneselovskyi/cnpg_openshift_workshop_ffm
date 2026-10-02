@@ -1,0 +1,116 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: minio-system
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: minio-creds
+  namespace: minio-system
+type: Opaque
+stringData:
+  MINIO_ROOT_USER: "minio"
+  MINIO_ROOT_PASSWORD: "edb-workshop"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+  namespace: minio-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  # CRC default storage class
+  #storageClassName: crc-csi-hostpath-provisioner
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: minio-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+      - name: minio
+        image: quay.io/minio/minio:latest
+        args:
+        - server
+        - /data
+        - --console-address
+        - ":9090"
+        envFrom:
+        - secretRef:
+            name: minio-creds
+        ports:
+        - containerPort: 9000
+          name: api
+        - containerPort: 9090
+          name: console
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: minio-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-service
+  namespace: minio-system
+spec:
+  ports:
+    - name: api
+      port: 9000
+      targetPort: 9000
+    - name: console
+      port: 9090
+      targetPort: 9090
+  selector:
+    app: minio
+---
+# Route for the MinIO Web Dashboard
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: minio-console
+  namespace: minio-system
+spec:
+  to:
+    kind: Service
+    name: minio-service
+  port:
+    targetPort: console
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+# Route for the S3 API (Used by CNPG or external apps)
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: minio-api
+  namespace: minio-system
+spec:
+  to:
+    kind: Service
+    name: minio-service
+  port:
+    targetPort: api
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

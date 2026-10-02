@@ -1,0 +1,18 @@
+schemaVersion: 2.2.0
+metadata:
+  name: enterprisedb-workshop
+  version: 1.0.0
+projects:
+  - name: workshop
+    git:
+      remotes:
+        origin: 'https://github.com/raphael-chir/edb-postgres-for-kubernetes-in-openshift.git'
+      checkoutFrom:
+        revision: main
+components:
+  - name: kubectl-cnp
+    container:
+      image: quay.io/david_martini/devspaces:edb
+      memoryLimit: 512Mi
+      mountSources: true
+      command: ['sleep', 'infinity']

@@ -1,0 +1,64 @@
+apiVersion: postgresql.k8s.enterprisedb.io/v1
+kind: Cluster
+metadata:
+  name: $cluster_name
+spec:
+  instances: $postgres_instances
+  logLevel: info
+  imageName: "$postgres_upgrade_image"
+  imagePullSecrets:
+  - name: postgresql-operator-pull-secret
+  enableSuperuserAccess: true
+
+  replicationSlots:
+    highAvailability:
+      enabled: true
+
+  postgresql:
+
+    synchronous:
+      method: any
+      number: 1
+      # preferred: Focuses on self-healing and high availability by automatically 
+      # disabling synchronous replication when no replicas are available in the cluster.
+      dataDurability: preferred
+
+    parameters:
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: all
+      DateStyle: "ISO, DMY"
+      
+  storage:
+    size: $postgres_storage
+
+  walStorage:
+    resizeInUseVolumes: true
+    size: $postgres_wal_storage
+
+  monitoring:
+    enablePodMonitor: true
+$affinity
+
+  resources:
+    limits:
+      memory: "$postgres_memory"
+      cpu: "$postgres_cpu"
+  
+  backup:
+    barmanObjectStore:
+      destinationPath: "$s3_destination_path"
+      s3Credentials: 
+        accessKeyId:
+          name: minio-creds
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: minio-creds
+          key: ACCESS_SECRET_KEY
+        sessionToken:
+          name: minio-creds
+          key: ACCESS_SESSION_TOKEN
+      data:
+        immediateCheckpoint: true
+    retentionPolicy: "1d"
+
+

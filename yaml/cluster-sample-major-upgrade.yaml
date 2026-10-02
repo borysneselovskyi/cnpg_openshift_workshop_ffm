@@ -1,0 +1,51 @@
+apiVersion: postgresql.k8s.enterprisedb.io/v1
+kind: Cluster
+metadata:
+  name: ${cluster_name}-major
+spec:
+  instances: 1
+  imageName: $postgres_major_upgrade_image
+  imagePullSecrets:
+  - name: postgresql-operator-pull-secret
+  enableSuperuserAccess: true
+
+  storage:
+    size: $postgres_storage
+
+  bootstrap:
+    initdb:
+      import:
+        type: microservice
+        databases:
+          - postgres
+        source:
+          externalCluster: ${cluster_name}
+
+  externalClusters:
+    - name: ${cluster_name}
+      connectionParameters:
+        host: ${cluster_name}-rw
+        user: postgres
+        dbname: postgres
+      password:
+        name: ${cluster_name}-superuser
+        key: password
+
+$affinity
+
+  resources:
+    limits:
+      memory: "$postgres_memory"
+      cpu: "$postgres_cpu"
+
+#  managed:
+#    services:
+#      #disabledDefaultServices: ["ro", "r"]
+#      additional:
+#      - selectorType: rw
+#        serviceTemplate:
+#          metadata:
+#            name: ${cluster_name}-17-rw-lb
+#          spec:
+#            type: LoadBalancer
+
