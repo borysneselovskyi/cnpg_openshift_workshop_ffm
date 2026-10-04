@@ -5,6 +5,10 @@ git_directory=`git rev-parse --show-toplevel`
 
 #. ./commands.sh
 
+export TMP=${HOME}/tmp
+[ -d $TMP ] || mkdir $TMP
+echo "Find the YAML-files in $TMP"
+
 # Variables to be replaced
 export id="$(oc whoami)"          # your name or id
 export region="emea"              # emea,na,apj
@@ -56,6 +60,7 @@ export postgres_wal_storage="512Mi"
 # EDB Postgres
 export postgres_default_image="docker.enterprisedb.com/k8s/postgresql:17.6"
 export postgres_upgrade_image="docker.enterprisedb.com/k8s/postgresql:17.7"
+export postgres_major_upgrade_image="docker.enterprisedb.com/k8s/postgresql:18"
 
 # EDB Postgres Extended
 #export postgres_default_image="docker.enterprisedb.com/k8s/edb-postgres-extended:17.6"
