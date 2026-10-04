@@ -6,7 +6,7 @@ projects:
   - name: workshop
     git:
       remotes:
-        origin: 'https://github.com/raphael-chir/edb-postgres-for-kubernetes-in-openshift.git'
+        origin: 'https://github.com/borysneselovskyi/cnpg_openshift_workshop_ffm.git'
       checkoutFrom:
         revision: main
 components:
