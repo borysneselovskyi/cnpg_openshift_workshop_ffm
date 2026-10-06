@@ -2,8 +2,8 @@
 # Runs watch on the CNP cluster status.
 #
 # Usage:
-#   ./watch-cluster.sh                      # interactive selection
-#   ./watch-cluster.sh cluster-user2-major  # use the given cluster directly
+#   ./cluster-watch.sh                      # interactive selection
+#   ./cluster-watch.sh cluster-user2-major  # use the given cluster directly
 #
 # In interactive mode, cluster names are determined via "oc get clusters"
 # (the userN part differs per environment).
