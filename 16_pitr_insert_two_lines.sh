@@ -5,8 +5,8 @@
 #Doc
 echo "16" > ./docs/docid
 
-print_command "${kubectl_cmd} exec -it ${primary} -- psql < ./pitr/pitr_insert_data_1.sql\n"
+print_command "${kubectl_cmd} exec -i ${primary} -- psql < ./pitr/pitr_insert_data_1.sql\n"
 
-${kubectl_cmd} exec -it ${primary} -- psql -U postgres < ./pitr/pitr_insert_data_1.sql
+${kubectl_cmd} exec -i ${primary} -- psql -U postgres < ./pitr/pitr_insert_data_1.sql
 sleep 5
-${kubectl_cmd} exec -it ${primary} -- psql -U postgres < ./pitr/pitr_insert_data_2.sql
+${kubectl_cmd} exec -i ${primary} -- psql -U postgres < ./pitr/pitr_insert_data_2.sql
