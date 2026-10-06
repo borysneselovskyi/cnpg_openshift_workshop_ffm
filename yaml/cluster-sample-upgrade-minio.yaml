@@ -8,6 +8,7 @@ spec:
   imageName: "$postgres_upgrade_image"
   imagePullSecrets:
   - name: postgresql-operator-pull-secret
+  primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: true
 
   replicationSlots:
@@ -27,16 +28,16 @@ spec:
       pg_stat_statements.max: "10000"
       pg_stat_statements.track: all
       DateStyle: "ISO, DMY"
+
+    enableAlterSystem: true
+    pg_hba:
+      - host all all 0.0.0.0/0 md5
       
   storage:
     size: $postgres_storage
 
   walStorage:
-    resizeInUseVolumes: true
     size: $postgres_wal_storage
-
-  #monitoring:
-  #  enablePodMonitor: true
 
 $affinity
 
