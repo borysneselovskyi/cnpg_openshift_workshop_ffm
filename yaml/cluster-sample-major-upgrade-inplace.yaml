@@ -8,7 +8,10 @@ spec:
   imageName: "$postgres_major_upgrade_image"
   imagePullSecrets:
   - name: postgresql-operator-pull-secret
+  primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: true
+
+  primaryUpdateMethod: switchover
 
   replicationSlots:
     highAvailability:
@@ -27,16 +30,16 @@ spec:
       pg_stat_statements.max: "10000"
       pg_stat_statements.track: all
       DateStyle: "ISO, DMY"
+
+    enableAlterSystem: true
+    pg_hba:
+      - host all all 0.0.0.0/0 md5
       
   storage:
     size: $postgres_storage
 
   walStorage:
-    resizeInUseVolumes: true
     size: $postgres_wal_storage
-
-  #monitoring:
-  #  enablePodMonitor: true
 
 $affinity
 
@@ -53,7 +56,7 @@ $affinity
     barmanObjectStore:
       destinationPath: "$s3_destination_path"
       endpointURL: "$s3_endpoint_url"
-      s3Credentials: 
+      s3Credentials:
         accessKeyId:
           name: minio-creds
           key: ACCESS_KEY_ID
