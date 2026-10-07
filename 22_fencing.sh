@@ -9,7 +9,7 @@ i=$1
 case $i in
   "on")
     print_command "${kubectl_cnp} fencing on ${cluster_name} ${replica}\n"
-    ${kubectl_cnp} fencing on ${cluster_name} ${cluster_name}-2
+    ${kubectl_cnp} fencing on ${cluster_name} ${replica}
     ;;
   "off")
     print_command "${kubectl_cnp} fencing off ${cluster_name} ${replica}\n"
