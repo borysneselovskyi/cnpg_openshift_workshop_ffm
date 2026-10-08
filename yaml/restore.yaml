@@ -15,9 +15,6 @@ spec:
     resizeInUseVolumes: true
     size: $postgres_wal_storage
 
-  monitoring:
-    enablePodMonitor: true
-
 $affinity
 
   bootstrap:
