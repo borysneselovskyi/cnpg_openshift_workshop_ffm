@@ -13,5 +13,6 @@ for ((i=1; i<=$users; i++)); do
   namespace="edb-${region}-${id}"
   postgres_instances=3
 
-  kubectl-cnp -n ${namespace} backup.postgresql.k8s.enterprisedb.io ${cluster_name} &
+  #kubectl-cnp -n ${namespace} backup.postgresql.k8s.enterprisedb.io ${cluster_name} &
+  kubectl-cnp -n ${namespace} backup ${cluster_name} &
 done
