@@ -91,7 +91,7 @@ export s3_destination_path="s3://${bucket}/"
 ## S3
 #export object_storage_bucket="${bucket}"
 #export s3_destination_path="s3://${bucket}/"
-export s3_endpoint_url="https://minio-api-minio.apps.ocp.qdj26.sandbox1251.opentlc.com"
+export s3_endpoint_url="https://minio-api-minio.apps.ocp.2lt49.sandbox2071.opentlc.com"
 
 
 # TDE used
